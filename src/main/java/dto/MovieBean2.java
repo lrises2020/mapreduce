@@ -3,26 +3,46 @@ package dto;
 /**
  * @Author Natasha
  * @Description
- * @Date 2021/6/9 14:02
+ * @Date 2021/6/9 15:04
  **/
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.io.WritableComparable;
 
 /**
- * Writable hadoop 序列化接口
- *
- * @author root
+ * Writeable  hadoop的序列化接口
+ * 能够排序
+ * MovieBean2 必须实现  WritableComparable 接口：write()  readFields()   compareTo()
+ * @author Administrator
  */
-public class MovieBean implements Writable {
+
+
+public class MovieBean2 implements WritableComparable<MovieBean> {
     //{"movie":"1193","rate":"5","timeStamp":"978300760","uid":"1"}
     private String movie;
     private int rate;
     private String timeStamp;
     private String uid;
+
+    @Override
+    public int compareTo(MovieBean o) {
+        if (o.getMovie().compareTo(this.getMovie()) == 0) {
+            return o.getRate() - this.getRate();
+        } else {
+            return o.getMovie().compareTo(this.getMovie());
+        }
+        //return 0;
+    }
+
+    public void set(String movie, int rate, String timeStamp, String uid) {
+        this.movie = movie;
+        this.rate = rate;
+        this.timeStamp = timeStamp;
+        this.uid = uid;
+    }
 
     @Override
     public void write(DataOutput out) throws IOException {
@@ -84,11 +104,6 @@ public class MovieBean implements Writable {
         this.rate = movieBean.getRate();
         this.timeStamp = movieBean.getTimeStamp();
         this.uid = movieBean.getUid();
-
-    }
-
-    public void set(String string, int i, String string2, String string3) {
-        // TODO Auto-generated method stub
 
     }
 }
